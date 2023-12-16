@@ -1,0 +1,20 @@
+{
+    "manifest_version": 3,
+    "name": "sigeva-bibtex",
+    "version": "1.0",
+    "permissions": ["activeTab"],
+    "content_scripts": [
+      {
+        "matches": ["https://sigeva.unlp.edu.ar/*", "https://si.conicet.gov.ar/*", "https://cvar.sicytar.mincyt.gob.ar/*"],
+        "js": ["contentScript.js"]
+      }
+    ],
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "host_permissions": [
+      "https://sigeva.unlp.edu.ar/*",
+      "https://si.conicet.gov.ar/*",
+      "https://cvar.sicytar.mincyt.gob.ar/*"
+    ]
+  }
