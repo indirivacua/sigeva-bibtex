@@ -146,7 +146,7 @@ chrome.runtime.onMessage.addListener(
 /*
 @article{example2023,
   title={An Example Article: A Study on AI and Machine Learning},
-  author={Doe, John and Smith, Jane and Perez, Juan and Fulanito, Meganito and Margarita, Flores},
+  author={Doe, John and Smith, Jane and P{\'e}rez, Juan and Fulanito, Meganito and Margarita, Flores},
   journal={The Journal of AI Research},
   volume={100},
   number={1},

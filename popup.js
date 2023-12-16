@@ -21,13 +21,39 @@ function parseBibtex(bibtex) {
   bibtexDict["key"] = typeAndKey[2];
 
   // Encuentra los pares campo-valor
-  let fieldValues = bibtex.match(/(\w*)=\{([^\}]*)\}/g);
-  for (let i = 0; i < fieldValues.length; i++) {
-    let split = fieldValues[i].split("=");
-    let field = split[0];
-    let value = split[1].slice(1, -1);  // Elimina las llaves
+  let regex = /(\w*)=\{((?:[^{}]|{[^{}]*})*)\}/g;
+  let match;
+  while ((match = regex.exec(bibtex)) !== null) {
+    let field = match[1];
+    let value = match[2];
+
+    // Reemplaza las codificaciones de acentos en LaTeX por los caracteres acentuados correspondientes
+    value = replaceLatexAccents(value);
+
+    // Convierte la entrada a UTF-8
+    value = decodeURIComponent(escape(value));
+
     bibtexDict[field] = value;
   }
 
   return bibtexDict;
+}
+
+function replaceLatexAccents(input) {
+  const accentMap = {
+    "\\'a": "á",
+    "\\'e": "é",
+    "\\'i": "í",
+    "\\'o": "ó",
+    "\\'u": "ú",
+    "\\'A": "Á",
+    "\\'E": "É",
+    "\\'I": "Í",
+    "\\'O": "Ó",
+    "\\'U": "Ú",
+    "\\~n": "ñ",
+    "\\~N": "Ñ"
+  };
+
+  return input.replace(/{\\(['~]?[a-zA-Z])}/g, (match, p1) => accentMap[`\\${p1}`] || p1);
 }
