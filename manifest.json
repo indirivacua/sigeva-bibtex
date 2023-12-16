@@ -6,7 +6,7 @@
     "content_scripts": [
       {
         "matches": ["https://sigeva.unlp.edu.ar/*", "https://si.conicet.gov.ar/*", "https://cvar.sicytar.mincyt.gob.ar/*"],
-        "js": ["contentScript.js"]
+        "js": ["content.js"]
       }
     ],
     "action": {

@@ -26,7 +26,8 @@ chrome.runtime.onMessage.addListener(
       //https://developer.chrome.com/docs/extensions/reference/api/i18n#method-detectLanguage
       //https://stackoverflow.com/a/60028059/11975664
       let idioma = document.getElementsByName("idioma")[0];
-      chrome.i18n.detectLanguage(bibtexDict["title"], function(result) {
+      const i18n = (window.browser || window.chrome || {}).i18n || { detectLanguage: () => undefined };
+      i18n.detectLanguage(bibtexDict["title"], function(result) {
         switch (result.languages[0].language) {
           case "es":
             idioma.value = "5";  // Español
@@ -142,24 +143,3 @@ chrome.runtime.onMessage.addListener(
     }
   }
 );
-
-/*
-@article{example2023,
-  title={An Example Article: A Study on AI and Machine Learning},
-  author={Doe, John and Smith, Jane and P{\'e}rez, Juan and Fulanito, Meganito and Margarita, Flores},
-  journal={The Journal of AI Research},
-  volume={100},
-  number={1},
-  pages={1--20},
-  year={2023},
-  issn={1234-5678},
-  doi={https://doi.org/10.1016/j.example.2023.01.001},
-  url={https://www.example.com/science/article/pii/S1234567816300973},
-  publisher={Elsevier},
-  organization={Elsevier},
-  booktitle={International Conference on Artificial Intelligence},
-  keywords={Artificial Intelligence, Machine Learning, Deep Learning, Data Mining, Business Intelligence},
-  month={January},
-  note={Open source software available from https://github.com/example/ai-software}
-}
-*/
