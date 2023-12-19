@@ -31,7 +31,11 @@ function parseBibtex(bibtex) {
     value = replaceLatexAccents(value);
 
     // Convierte la entrada a UTF-8
-    value = decodeURIComponent(escape(value));
+    try {
+      value = decodeURIComponent(escape(value));
+    } catch {
+      value = value
+    }
 
     bibtexDict[field] = value;
   }
