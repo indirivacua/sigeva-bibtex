@@ -6,22 +6,22 @@ chrome.runtime.onMessage.addListener(
       // DATOS BÁSICOS
 
       // Tipo de trabajo:
-      let tipoTrabajoSelect = document.getElementsByName("tipoTrabajo")[0];
+      let tipoTrabajo = document.getElementsByName("tipoTrabajo")[0];
       switch (bibtexDict["type"]) {
         case "article":
         case "inproceedings":
         case "incollection":
-          tipoTrabajoSelect.value = "1";  // Artículo Completo
+          tipoTrabajo.value = "1";  // Artículo Completo
           break;
         case "misc":
-          tipoTrabajoSelect.value = "4";  // Otro
+          tipoTrabajo.value = "4";  // Otro
           break;
         default:
-          tipoTrabajoSelect.value = "-1";  // ---------- Seleccionar ----------
+          tipoTrabajo.value = "-1";  // ---------- Seleccionar ----------
       }
       // Título de trabajo:
       let tituloTrabajo = document.getElementsByName("produccion")[0];
-      tituloTrabajo.value = bibtexDict["title"]
+      tituloTrabajo.value = bibtexDict["title"];
       // Idioma:
       //https://developer.chrome.com/docs/extensions/reference/api/i18n#method-detectLanguage
       //https://stackoverflow.com/a/60028059/11975664
@@ -50,6 +50,13 @@ chrome.runtime.onMessage.addListener(
         tituloPublicacion.value = bibtexDict["booktitle"];
       } else {
         tipoPublicacion.value = "-1";  // ---------- Seleccionar ----------
+      }
+      // ISSN/ISBN:
+      let issnIsbn = document.getElementsByName("issnIsbn")[0];
+      if (bibtexDict.hasOwnProperty("isbn")) {
+        issnIsbn.value = bibtexDict["isbn"];
+      } else if (bibtexDict.hasOwnProperty("issn")) {
+        issnIsbn.value = bibtexDict["issn"];
       }
       // País de edición:
       // INCHEQUEABLE
@@ -81,7 +88,18 @@ chrome.runtime.onMessage.addListener(
     // INCHEQUEABLE
     // Alcance geográfico:
     // INCHEQUEABLE
+    // País del evento:
+    let paisEvento = document.getElementsByName("paisEvento")[0];
+    let options = paisEvento.options;
+    for (let i = 0; i < options.length; i++) {
+        if (options[i].text === bibtexDict["country"]) {
+          paisEvento.value = options[i].value;
+            break;
+        }
+    }
     // Ciudad del evento:
+    let lugarReunion = document.getElementsByName("lugarReunion")[0];
+    lugarReunion.value = bibtexDict["city"];
     // Fecha del evento:
     let fechaReunion = document.getElementsByName("fechaReunion")[0];
     let monthNumbers = {
