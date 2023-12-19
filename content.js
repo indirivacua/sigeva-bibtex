@@ -85,15 +85,59 @@ chrome.runtime.onMessage.addListener(
     let reunionCientifica = document.getElementsByName("reunionCientifica")[0];
     reunionCientifica.value = bibtexDict["booktitle"];
     // Tipo de evento:
-    // INCHEQUEABLE
+    let tipoReunion = document.getElementsByName("tipoReunion")[0];
+    let options_tipoReunion = tipoReunion.options;
+    let eventType = {
+      "Congreso": "Congreso",
+      "Congress": "Congreso",
+      "Conferencia": "Conferencia",
+      "Conference": "Conferencia",
+      "Simposio": "Simposio",
+      "Symposium": "Simposio",
+      "Taller": "Taller",
+      "Workshop": "Workshop",
+      "Jornada": "Jornada",
+      "Exposición": "Exposición",
+      "Exhibition": "Exposición",
+      "Seminario": "Seminario",
+      "Seminar": "Seminario",
+      "Encuentro": "Encuentro",
+      "Meeting": "Encuentro",
+      // Plurales
+      "Congresos": "Congreso",
+      "Congresses": "Congreso",
+      "Conferencias": "Conferencia",
+      "Conferences": "Conferencia",
+      "Simposios": "Simposio",
+      "Symposiums": "Simposio",
+      "Talleres": "Taller",
+      "Workshops": "Workshop",
+      "Jornadas": "Jornada",
+      "Exposiciones": "Exposición",
+      "Exhibitions": "Exposición",
+      "Seminarios": "Seminario",
+      "Seminars": "Seminario",
+      "Encuentros": "Encuentro",
+      "Meetings": "Encuentro",
+    };
+    for (let key in eventType) {
+      if (bibtexDict["booktitle"].includes(key)) {
+        for (let i = 0; i < options_tipoReunion.length; i++) {
+          if (options_tipoReunion[i].text === eventType[key]) {
+            tipoReunion.value = options_tipoReunion[i].value;
+            break;
+          }
+        }
+      }
+    }
     // Alcance geográfico:
     // INCHEQUEABLE
     // País del evento:
     let paisEvento = document.getElementsByName("paisEvento")[0];
-    let options = paisEvento.options;
-    for (let i = 0; i < options.length; i++) {
-        if (options[i].text === bibtexDict["country"]) {
-          paisEvento.value = options[i].value;
+    let options_paisEvento = paisEvento.options;
+    for (let i = 0; i < options_paisEvento.length; i++) {
+        if (options_paisEvento[i].text === bibtexDict["country"]) {
+          paisEvento.value = options_paisEvento[i].value;
             break;
         }
     }
