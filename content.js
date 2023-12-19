@@ -186,6 +186,8 @@ chrome.runtime.onMessage.addListener(
     // ÁREA DEL CONOCIMIENTO (MÁXIMO TRES) -- NO FUNCIONA
     let campo0Select = document.getElementsByName('campo_0')[0];
     campo0Select.value = '6';  // '1.2 Ciencias de la Computación e Información'
+    let event = new Event('change');
+    campo0Select.dispatchEvent(event);
     setTimeout(function() {
       let campo00Select = document.getElementsByName('campo_0_0')[0];
       campo00Select.value = '254';  // '1.2.3 Otras Ciencias de la Computación e Información'
