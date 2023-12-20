@@ -1,6 +1,13 @@
 {
     "manifest_version": 3,
     "name": "sigeva-bibtex",
+    "homepage_url": "https://github.com/indirivacua/sigeva-bibtex",
+    "description": "Plugin para cargar automáticamente trabajos científicos en SIGEVA a partir de un bibtex.",
+    "icons": {
+      "16": "images/icon16.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
+    },
     "version": "1.0",
     "permissions": ["activeTab"],
     "content_scripts": [
@@ -10,7 +17,8 @@
       }
     ],
     "action": {
-      "default_popup": "popup.html"
+      "default_popup": "popup.html",
+      "default_icon": "icon.png"
     },
     "host_permissions": [
       "https://sigeva.unlp.edu.ar/*",
