@@ -1,3 +1,52 @@
+let monthNumbers = {
+  "January": "01",
+  "February": "02",
+  "March": "03",
+  "April": "04",
+  "May": "05",
+  "June": "06",
+  "July": "07",
+  "August": "08",
+  "September": "09",
+  "October": "10",
+  "November": "11",
+  "December": "12"
+};
+
+let eventType = {
+  "Congreso": "Congreso",
+  "Congress": "Congreso",
+  "Conferencia": "Conferencia",
+  "Conference": "Conferencia",
+  "Simposio": "Simposio",
+  "Symposium": "Simposio",
+  "Taller": "Taller",
+  "Workshop": "Workshop",
+  "Jornada": "Jornada",
+  "Exposición": "Exposición",
+  "Exhibition": "Exposición",
+  "Seminario": "Seminario",
+  "Seminar": "Seminario",
+  "Encuentro": "Encuentro",
+  "Meeting": "Encuentro",
+  // Plurales
+  "Congresos": "Congreso",
+  "Congresses": "Congreso",
+  "Conferencias": "Conferencia",
+  "Conferences": "Conferencia",
+  "Simposios": "Simposio",
+  "Symposiums": "Simposio",
+  "Talleres": "Taller",
+  "Workshops": "Workshop",
+  "Jornadas": "Jornada",
+  "Exposiciones": "Exposición",
+  "Exhibitions": "Exposición",
+  "Seminarios": "Seminario",
+  "Seminars": "Seminario",
+  "Encuentros": "Encuentro",
+  "Meetings": "Encuentro",
+};
+
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.message === "updatePage") {
@@ -87,39 +136,6 @@ chrome.runtime.onMessage.addListener(
     // Tipo de evento:
     let tipoReunion = document.getElementsByName("tipoReunion")[0];
     let options_tipoReunion = tipoReunion.options;
-    let eventType = {
-      "Congreso": "Congreso",
-      "Congress": "Congreso",
-      "Conferencia": "Conferencia",
-      "Conference": "Conferencia",
-      "Simposio": "Simposio",
-      "Symposium": "Simposio",
-      "Taller": "Taller",
-      "Workshop": "Workshop",
-      "Jornada": "Jornada",
-      "Exposición": "Exposición",
-      "Exhibition": "Exposición",
-      "Seminario": "Seminario",
-      "Seminar": "Seminario",
-      "Encuentro": "Encuentro",
-      "Meeting": "Encuentro",
-      // Plurales
-      "Congresos": "Congreso",
-      "Congresses": "Congreso",
-      "Conferencias": "Conferencia",
-      "Conferences": "Conferencia",
-      "Simposios": "Simposio",
-      "Symposiums": "Simposio",
-      "Talleres": "Taller",
-      "Workshops": "Workshop",
-      "Jornadas": "Jornada",
-      "Exposiciones": "Exposición",
-      "Exhibitions": "Exposición",
-      "Seminarios": "Seminario",
-      "Seminars": "Seminario",
-      "Encuentros": "Encuentro",
-      "Meetings": "Encuentro",
-    };
     for (let key in eventType) {
       if (bibtexDict["booktitle"].includes(key)) {
         for (let i = 0; i < options_tipoReunion.length; i++) {
@@ -151,20 +167,6 @@ chrome.runtime.onMessage.addListener(
     lugarPublicacion.value = bibtexDict["city"];
     // Fecha del evento:
     let fechaReunion = document.getElementsByName("fechaReunion")[0];
-    let monthNumbers = {
-      "January": "01",
-      "February": "02",
-      "March": "03",
-      "April": "04",
-      "May": "05",
-      "June": "06",
-      "July": "07",
-      "August": "08",
-      "September": "09",
-      "October": "10",
-      "November": "11",
-      "December": "12"
-    };
     let monthNumber = monthNumbers[bibtexDict["month"]];
     fechaReunion.value = monthNumber + "/" + bibtexDict["year"];
     // Institución organizadora:
@@ -216,3 +218,131 @@ chrome.runtime.onMessage.addListener(
     hdnresumen.value = bibtexDict['abstract'];
   }
 );
+
+let exportButton = document.createElement('input');
+exportButton.type = 'submit';
+exportButton.name = 'btnExport';
+exportButton.value = 'Exportar';
+exportButton.className = 'CformBoton';
+exportButton.style.backgroundColor = '#ffd000';
+
+function download(data, filename, type) {
+    let file = new Blob([data], {type: type});
+    let a = document.createElement("a");
+    let url = URL.createObjectURL(file);
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function() {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }, 0);
+}
+
+function dictToBibtex(dict) {
+  let bibtex = '@' + dict.type + '{' + dict.key + ',\n';
+  for (let key in dict) {
+      if (dict.hasOwnProperty(key) && key !== 'type' && key !== 'key') {
+          bibtex += '  ' + key + '={' + dict[key] + '},\n';
+      }
+  }
+  bibtex += '}';
+  return bibtex;
+}
+
+function getAuthorNames(autorTable) {
+  let authorNames = [];
+  for (let i = 0; i < autorTable.length; i++) {
+      authorNames.push(autorTable[i].value);
+  }
+  let authorNamesString = authorNames.join(' and ');
+  // Trim the trailing " and " from the string
+  if (authorNamesString.endsWith(' and ')) {
+      authorNamesString = authorNamesString.substring(0, authorNamesString.length - 5);
+  }
+  return authorNamesString;
+}
+
+function getMonthName(monthNumber) {
+  for (let month in monthNumbers) {
+      if (monthNumbers[month] === monthNumber) {
+          return month;
+      }
+  }
+}
+
+function getKeywords(palabraTable) {
+  let keywords = [];
+  for (let i = 0; i < palabraTable.length; i++) {
+      keywords.push(palabraTable[i].value);
+  }
+  let keywordsString = keywords.join(', ');
+  return keywordsString;
+}
+
+exportButton.onclick = function() {
+    let bibtexDict = {};
+
+    //type
+    let tipoTrabajo = document.getElementsByName("tipoTrabajo")[0];
+    bibtexDict.type = tipoTrabajo.value == "1" ? "article" : "misc";
+    //key
+    bibtexDict.key = 'example2023';
+    //title
+    let tituloTrabajo = document.getElementsByName("produccion")[0];
+    bibtexDict.title = tituloTrabajo.value;
+    //author
+    let autorTable = document.querySelectorAll('#autorTable input[type="text"][name="autorParticipacionLabel"]');
+    bibtexDict.author = getAuthorNames(autorTable);
+    //journal
+    let tituloPublicacion = document.getElementsByName("tituloPublicacion")[0];
+    let tipoPublicacion = document.getElementsByName("tipoPublicacion")[0];
+    if (tipoPublicacion.value == "6") {
+      bibtexDict.journal = tituloPublicacion.value;
+    } else if (tipoPublicacion.value == "5") {
+      bibtexDict.booktitle = tituloPublicacion.value;
+    }
+    //isbn
+    let issnIsbn = document.getElementsByName("issnIsbn")[0];
+    bibtexDict.isbn = issnIsbn.value;
+    //publisher
+    let editorial = document.getElementsByName("editorial")[0];
+    bibtexDict.publisher = editorial.value;
+    //year
+    let anioPublica = document.getElementsByName("anioPublica")[0];
+    bibtexDict.year = anioPublica.value;
+    //url
+    let web = document.getElementsByName("web")[0];
+    bibtexDict.url = web.value;
+    //country
+    let paisEdicion = document.getElementsByName("paisEdicion")[0];
+    let selectedOption = paisEdicion.options[paisEdicion.selectedIndex];
+    bibtexDict.country = selectedOption.text;
+    //city
+    let lugarPublicacion = document.getElementsByName("lugarPublicacion")[0];
+    bibtexDict.city = lugarPublicacion.value;
+    //month
+    let fechaReunion = document.getElementsByName("fechaReunion")[0];
+    let monthNumber = fechaReunion.value.split('/')[0];
+    bibtexDict.month = getMonthName(monthNumber)
+    //organization
+    let institucionOrganizadora = document.getElementsByName("institucionOrganizadora")[0];
+    bibtexDict.organization = institucionOrganizadora.value;
+    //keywords
+    let palabraTable = document.querySelectorAll('#palabraTable input[type="text"][name="palabraLabel"]');
+    bibtexDict.keywords = getKeywords(palabraTable);
+    //abstract
+    let hdnresumen = document.getElementsByName('hdnresumen')[0];
+    bibtexDict.abstract = hdnresumen.value;
+
+    let bibtex = dictToBibtex(bibtexDict);
+
+    download(bibtex, `${bibtexDict.title}.bib`, 'application/x-bibtex');
+};
+
+let guardarButton = document.querySelector('input[value="Modificar"]');
+
+if (guardarButton) {
+  guardarButton.parentNode.insertBefore(exportButton, guardarButton.nextSibling);
+}
