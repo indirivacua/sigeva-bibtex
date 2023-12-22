@@ -59,9 +59,9 @@ chrome.runtime.onMessage.addListener(
         issnIsbn.value = bibtexDict["issn"];
       }
       // País de edición:
-      // INCHEQUEABLE
+      // Asumo que paisEdicion=paisEvento (ver abajo)
       // Ciudad de la editorial:
-      // INCHEQUEABLE
+      // Asumo que lugarPublicacion=lugarReunion (ver abajo)
       // Editorial:
       let editorial = document.getElementsByName("editorial")[0];
       editorial.value = bibtexDict["publisher"];
@@ -131,19 +131,24 @@ chrome.runtime.onMessage.addListener(
       }
     }
     // Alcance geográfico:
-    // INCHEQUEABLE
+    let alcanceInternacional = document.getElementsByName("alcanceInternacional")[0];
+    alcanceInternacional.checked = true;
     // País del evento:
     let paisEvento = document.getElementsByName("paisEvento")[0];
+    let paisEdicion = document.getElementsByName("paisEdicion")[0];
     let options_paisEvento = paisEvento.options;
     for (let i = 0; i < options_paisEvento.length; i++) {
         if (options_paisEvento[i].text === bibtexDict["country"]) {
           paisEvento.value = options_paisEvento[i].value;
-            break;
+          paisEdicion.value = options_paisEvento[i].value;
+          break;
         }
     }
     // Ciudad del evento:
     let lugarReunion = document.getElementsByName("lugarReunion")[0];
+    let lugarPublicacion = document.getElementsByName("lugarPublicacion")[0];
     lugarReunion.value = bibtexDict["city"];
+    lugarPublicacion.value = bibtexDict["city"];
     // Fecha del evento:
     let fechaReunion = document.getElementsByName("fechaReunion")[0];
     let monthNumbers = {
@@ -183,7 +188,7 @@ chrome.runtime.onMessage.addListener(
 
     // ÁREAS DEL CONOCIMIENTO Y PALABRAS CLAVE
 
-    // ÁREA DEL CONOCIMIENTO (MÁXIMO TRES) -- NO FUNCIONA
+    // ÁREA DEL CONOCIMIENTO (MÁXIMO TRES)
     let campo0Select = document.getElementsByName('campo_0')[0];
     campo0Select.value = '6';  // '1.2 Ciencias de la Computación e Información'
     let event = new Event('change');
@@ -192,7 +197,7 @@ chrome.runtime.onMessage.addListener(
       let campo00Select = document.getElementsByName('campo_0_0')[0];
       campo00Select.value = '254';  // '1.2.3 Otras Ciencias de la Computación e Información'
     }, 1000);
-    //PALABRA CLAVE
+    // PALABRA CLAVE
     let palabrasClave = bibtexDict['keywords'].split(',');
     let casillasPalabra = document.getElementsByName('palabraLabel');
     let botonPalabraNuevo = document.getElementsByName('palabraNuevo')[0];
@@ -205,5 +210,9 @@ chrome.runtime.onMessage.addListener(
       }
       casillasPalabra[i].value = palabrasClave[i].trim();
     }
+
+    // RESUMEN (O ABSTRACT)
+    let hdnresumen = document.getElementsByName('hdnresumen')[0];
+    hdnresumen.value = bibtexDict['abstract'];
   }
 );

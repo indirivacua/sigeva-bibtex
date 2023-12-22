@@ -12,7 +12,7 @@ La extensión fue probada solo en navegadores basados en Chromium, igual deberí
 
 ## Uso
 
-Con algún motor de búsqueda académico como [Google Scholar](https://scholar.google.com/) obtené el bibtex del paper que querés cargar en SIGEVA.
+Con algún motor de búsqueda académico como [Google Scholar](https://scholar.google.com/) obtené el BibTeX del paper que querés cargar en SIGEVA.
 
 <details><summary>Ejemplo</summary>
 
@@ -36,12 +36,13 @@ Con algún motor de búsqueda académico como [Google Scholar](https://scholar.g
   booktitle={International Conference on Artificial Intelligence},
   keywords={Artificial Intelligence, Machine Learning, Deep Learning, Data Mining, Business Intelligence},
   month={January},
+  abstract={This study explores AI and ML including DL and DM. We highlight the potential of AI and ML in various sectors and provide an open-source software tool for further research.},
   note={Open source software available from https://github.com/example/ai-software}
 }
 ```
 
 </details>
 
-Luego hacé click en el ícono de la extensión en la barra de herramientas de Chrome mientras estás en una página compatible. Pegá el bibtex en el campo del texto y tocá el botón **Insertar**. Done.
+Luego hacé click en el ícono de la extensión en la barra de herramientas de Chrome mientras estás en una página compatible. Pegá el BibTeX en el campo del texto y tocá el botón **Insertar**. Done.
 
 ![Alt text](preview.png)
