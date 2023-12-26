@@ -144,6 +144,9 @@ chrome.runtime.onMessage.addListener(
         }
       }
     }
+    if (tipoReunion.value == "-1") {  // ---------- Seleccionar ----------
+      tipoReunion.value = "7";  // Otro
+    }
     // Alcance geográfico:
     let alcanceInternacional = document.getElementsByName("alcanceInternacional")[0];
     alcanceInternacional.checked = true;

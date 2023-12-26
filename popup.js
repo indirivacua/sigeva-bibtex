@@ -12,6 +12,19 @@ document.getElementById("insert_button").addEventListener("click", function() {
   });
 });
 
+document.getElementById("upload_button").addEventListener("click", function() {
+  document.getElementById("file_input").click();
+});
+
+document.getElementById("file_input").addEventListener("change", function(e) {
+  var file = e.target.files[0];
+  var reader = new FileReader();
+  reader.onload = function(event) {
+    document.getElementById("input_area").value = event.target.result;
+  };
+  reader.readAsText(file);
+});
+
 function parseBibtex(bibtex) {
   let bibtexDict = {};
 
