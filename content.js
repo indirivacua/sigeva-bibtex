@@ -69,8 +69,8 @@ chrome.runtime.onMessage.addListener(
           tipoTrabajo.value = "-1";  // ---------- Seleccionar ----------
       }
       // Título de trabajo:
-      let tituloTrabajo = document.getElementsByName("produccion")[0];
-      tituloTrabajo.value = bibtexDict["title"];
+      let produccion = document.getElementsByName("produccion")[0];
+      produccion.value = bibtexDict["title"];
       // Idioma:
       //https://developer.chrome.com/docs/extensions/reference/api/i18n#method-detectLanguage
       //https://stackoverflow.com/a/60028059/11975664
@@ -107,10 +107,8 @@ chrome.runtime.onMessage.addListener(
       } else if (bibtexDict.hasOwnProperty("issn")) {
         issnIsbn.value = bibtexDict["issn"];
       }
-      // País de edición:
-      // Asumo que paisEdicion=paisEvento (ver abajo)
-      // Ciudad de la editorial:
-      // Asumo que lugarPublicacion=lugarReunion (ver abajo)
+      // País de edición: (paisEdicion=paisEvento)
+      // Ciudad de la editorial: (lugarPublicacion=lugarReunion)
       // Editorial:
       let editorial = document.getElementsByName("editorial")[0];
       editorial.value = bibtexDict["publisher"];
@@ -118,13 +116,13 @@ chrome.runtime.onMessage.addListener(
       let anioPublica = document.getElementsByName("anioPublica")[0];
       anioPublica.value = bibtexDict["year"];
       // SOPORTE Y/O MEDIO DE DIFUSIÓN (URL)
-      let checkboxes = document.getElementsByName("tipoSoporteChecked");
+      let tipoSoporteChecked = document.getElementsByName("tipoSoporteChecked");
       let web = document.getElementsByName("web")[0];
       if (bibtexDict.hasOwnProperty("url")) {
-        checkboxes[1].checked = true;
+        tipoSoporteChecked[1].checked = true;
         web.value = bibtexDict["url"];
       } else {
-        checkboxes[0].checked = true;
+        tipoSoporteChecked[0].checked = true;
       }
     }
 
@@ -175,56 +173,49 @@ chrome.runtime.onMessage.addListener(
 
     // AUTORES
 
-    let autores = bibtexDict['author'].split(' and ');
-    let casillasAutor = document.getElementsByName('autorParticipacionLabel');
-    let botonAutorNuevo = document.getElementsByName('autorNuevo')[0];
+    let autores = bibtexDict["author"].split(" and ");
+    let autorParticipacionLabel = document.getElementsByName("autorParticipacionLabel");
+    let autorNuevo = document.getElementsByName("autorNuevo")[0];
     for (let i = 0; i < autores.length; i++) {
-      if (i >= casillasAutor.length) {
-        botonAutorNuevo.click();
+      if (i >= autorParticipacionLabel.length) {
+        autorNuevo.click();
         setTimeout(function() {
-          casillasAutor = document.getElementsByName('autorParticipacionLabel');
+          autorParticipacionLabel = document.getElementsByName("autorParticipacionLabel");
         }, 500);
       }
-      casillasAutor[i].value = autores[i].trim();
+      autorParticipacionLabel[i].value = autores[i].trim();
     }
 
     // ÁREAS DEL CONOCIMIENTO Y PALABRAS CLAVE
 
     // ÁREA DEL CONOCIMIENTO (MÁXIMO TRES)
-    let campo0Select = document.getElementsByName('campo_0')[0];
-    campo0Select.value = '6';  // '1.2 Ciencias de la Computación e Información'
-    let event = new Event('change');
-    campo0Select.dispatchEvent(event);
+    let campo_0 = document.getElementsByName("campo_0")[0];
+    campo_0.value = "6";  // 1.2 Ciencias de la Computación e Información
+    let event = new Event("change");
+    campo_0.dispatchEvent(event);
     setTimeout(function() {
-      let campo00Select = document.getElementsByName('campo_0_0')[0];
-      campo00Select.value = '254';  // '1.2.3 Otras Ciencias de la Computación e Información'
+      let campo_0_0 = document.getElementsByName("campo_0_0")[0];
+      campo_0_0.value = "254";  // 1.2.3 Otras Ciencias de la Computación e Información
     }, 1000);
     // PALABRA CLAVE
-    let palabrasClave = bibtexDict['keywords'].split(',');
-    let casillasPalabra = document.getElementsByName('palabraLabel');
-    let botonPalabraNuevo = document.getElementsByName('palabraNuevo')[0];
+    let palabrasClave = bibtexDict["keywords"].split(",");
+    let palabraLabel = document.getElementsByName("palabraLabel");
+    let palabraNuevo = document.getElementsByName("palabraNuevo")[0];
     for (let i = 0; i < palabrasClave.length; i++) {
-      if (i >= casillasPalabra.length) {
-        botonPalabraNuevo.click();
+      if (i >= palabraLabel.length) {
+        palabraNuevo.click();
         setTimeout(function() {
-          casillasPalabra = document.getElementsByName('palabraLabel');
+          palabraLabel = document.getElementsByName("palabraLabel");
         }, 500);
       }
-      casillasPalabra[i].value = palabrasClave[i].trim();
+      palabraLabel[i].value = palabrasClave[i].trim();
     }
 
     // RESUMEN (O ABSTRACT)
-    let hdnresumen = document.getElementsByName('hdnresumen')[0];
-    hdnresumen.value = bibtexDict['abstract'];
+    let hdnresumen = document.getElementsByName("hdnresumen")[0];
+    hdnresumen.value = bibtexDict["abstract"];
   }
 );
-
-let exportButton = document.createElement('input');
-exportButton.type = 'submit';
-exportButton.name = 'btnExport';
-exportButton.value = 'Exportar';
-exportButton.className = 'CformBoton';
-exportButton.style.backgroundColor = '#ffd000';
 
 function download(data, filename, type) {
     let file = new Blob([data], {type: type});
@@ -241,13 +232,13 @@ function download(data, filename, type) {
 }
 
 function dictToBibtex(dict) {
-  let bibtex = '@' + dict.type + '{' + dict.key + ',\n';
+  let bibtex = "@" + dict.type + "{" + dict.key + ",\n";
   for (let key in dict) {
-      if (dict.hasOwnProperty(key) && key !== 'type' && key !== 'key') {
-          bibtex += '  ' + key + '={' + dict[key] + '},\n';
+      if (dict.hasOwnProperty(key) && key !== "type" && key !== "key") {
+          bibtex += "  " + key + "={" + dict[key] + "},\n";
       }
   }
-  bibtex += '}';
+  bibtex += "}";
   return bibtex;
 }
 
@@ -256,9 +247,9 @@ function getAuthorNames(autorTable) {
   for (let i = 0; i < autorTable.length; i++) {
       authorNames.push(autorTable[i].value);
   }
-  let authorNamesString = authorNames.join(' and ');
+  let authorNamesString = authorNames.join(" and ");
   // Trim the trailing " and " from the string
-  if (authorNamesString.endsWith(' and ')) {
+  if (authorNamesString.endsWith(" and ")) {
       authorNamesString = authorNamesString.substring(0, authorNamesString.length - 5);
   }
   return authorNamesString;
@@ -277,9 +268,16 @@ function getKeywords(palabraTable) {
   for (let i = 0; i < palabraTable.length; i++) {
       keywords.push(palabraTable[i].value);
   }
-  let keywordsString = keywords.join(', ');
+  let keywordsString = keywords.join(", ");
   return keywordsString;
 }
+
+let exportButton = document.createElement("input");
+exportButton.type = "submit";
+exportButton.name = "btnExport";
+exportButton.value = "Exportar";
+exportButton.className = "CformBoton";
+exportButton.style.backgroundColor = "#ffd000";
 
 exportButton.onclick = function() {
     let bibtexDict = {};
@@ -288,7 +286,7 @@ exportButton.onclick = function() {
     let tipoTrabajo = document.getElementsByName("tipoTrabajo")[0];
     bibtexDict.type = tipoTrabajo.value == "1" ? "article" : "misc";
     //key
-    bibtexDict.key = 'example2023';
+    bibtexDict.key = "example2023";
     //title
     let tituloTrabajo = document.getElementsByName("produccion")[0];
     bibtexDict.title = tituloTrabajo.value;
@@ -324,7 +322,7 @@ exportButton.onclick = function() {
     bibtexDict.city = lugarPublicacion.value;
     //month
     let fechaReunion = document.getElementsByName("fechaReunion")[0];
-    let monthNumber = fechaReunion.value.split('/')[0];
+    let monthNumber = fechaReunion.value.split("/")[0];
     bibtexDict.month = getMonthName(monthNumber)
     //organization
     let institucionOrganizadora = document.getElementsByName("institucionOrganizadora")[0];
@@ -333,12 +331,12 @@ exportButton.onclick = function() {
     let palabraTable = document.querySelectorAll('#palabraTable input[type="text"][name="palabraLabel"]');
     bibtexDict.keywords = getKeywords(palabraTable);
     //abstract
-    let hdnresumen = document.getElementsByName('hdnresumen')[0];
+    let hdnresumen = document.getElementsByName("hdnresumen")[0];
     bibtexDict.abstract = hdnresumen.value;
 
     let bibtex = dictToBibtex(bibtexDict);
 
-    download(bibtex, `${bibtexDict.title}.bib`, 'application/x-bibtex');
+    download(bibtex, `${bibtexDict.title}.bib`, "application/x-bibtex");
 };
 
 let guardarButton = document.querySelector('input[value="Modificar"]');
