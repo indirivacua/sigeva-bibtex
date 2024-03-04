@@ -45,4 +45,4 @@ Con algún motor de búsqueda académico como [Google Scholar](https://scholar.g
 
 Luego hacé click en el ícono de la extensión en la barra de herramientas de Chrome mientras estás en una página compatible. Pegá el BibTeX en el campo del texto y tocá el botón **Insertar**. Done.
 
-![Alt text](preview.png)
+![Alt text](releases/screenshot.png)
