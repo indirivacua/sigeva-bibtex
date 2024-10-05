@@ -20,6 +20,7 @@ Con algún motor de búsqueda académico como [Google Scholar](https://scholar.g
 @article{example2023,
   title={An Example Article: A Study on AI and Machine Learning},
   author={Doe, John and Smith, Jane and P{\'e}rez, Juan and Fulanito, Meganito and Margarita, Flores},
+  affiliations={{Doe, John} INSTITUTO DE INVESTIGACION EN INFORMATICA LIDI {20408} <SEP> {Doe, John} INSTITUTO DE INVESTIGACION EN INFORMATICA LIDI {20408} <SEP> {Smith, Jane} COMISION DE INVESTIGACIONES CIENTIFICAS DE LA PROVINCIA DE BUENOS AIRES {2837}},
   journal={The Journal of AI Research},
   volume={100},
   number={1},

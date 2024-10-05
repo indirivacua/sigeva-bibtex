@@ -47,6 +47,73 @@ let eventType = {
   "Meetings": "Encuentro",
 };
 
+function cargarAfiliaciones(bibtexDict) {
+  let afiliaciones = bibtexDict.affiliations.split("<SEP>");
+
+  let afiliacionesPorAutor = {};
+
+  // Recorrer cada afiliación
+  afiliaciones.forEach(function(afiliacion) {
+    // Utilizamos una expresión regular para separar el nombre del autor, la afiliación y el ID
+    let regex = /\{(.+?)\}\s(.+?)\s\{(.+?)\}/;
+    let matches = afiliacion.match(regex);
+
+    if (matches) {
+      let autor = matches[1].trim();
+      let organizacion = matches[2].trim();
+      let organizacionId = matches[3].trim();
+
+      // Si el autor no existe aún en el objeto, lo creamos
+      if (!afiliacionesPorAutor[autor]) {
+        afiliacionesPorAutor[autor] = [];
+      }
+
+      // Añadimos la afiliación a la lista del autor
+      afiliacionesPorAutor[autor].push({ organizacion, organizacionId });
+    }
+  });
+
+  // Ahora recorremos los autores en la página para insertar sus respectivas afiliaciones
+  let autorParticipacionLabel = document.getElementsByName("autorParticipacionLabel");
+
+  for (let i = 0; i < autorParticipacionLabel.length; i++) {
+    let autorActual = autorParticipacionLabel[i].value.trim();
+
+    // Si hay afiliaciones para el autor actual
+    if (afiliacionesPorAutor[autorActual]) {
+      let autorTable = autorParticipacionLabel[i].closest("table").querySelector("tbody");
+
+      // Insertar cada afiliación de ese autor
+      afiliacionesPorAutor[autorActual].forEach(function(afiliacion) {
+        let nuevaFila = `
+        <tr class="odd">
+          <td colspan="2" style="width:500;border-top: 1px solid #888;">
+            <div>${afiliacion.organizacion}</div>
+            <input type="hidden" name="autorOrganizacionLabel" value="${afiliacion.organizacion}">
+            <input type="hidden" name="autorOrganizacionId" value="${afiliacion.organizacionId}">
+            <input type="hidden" name="autorParticipacionOrganizacionId" value="">
+            <input type="hidden" name="autorParticipacionId" value="">
+            <input type="hidden" name="autorisOtraOrganizacion" value="false">
+            <input type="hidden" name="autorPaisId" value="">
+            <input type="hidden" name="autorProvinciaId" value="">
+            <input type="hidden" name="autorRelacionadaId" value="">
+            <input type="hidden" name="autorNivel" value="">
+            <input type="hidden" name="autorRuta" value="${afiliacion.organizacion}">
+            <input type="hidden" name="autorTipoId" value="">
+            <input type="hidden" name="autorAffiliationId" value="">
+          </td>
+          <td style="width:30;border-top: 1px solid #888;">
+            <input type="button" name="autorOrganizacionBorrar" value="Borrar" class="borrar" align="right">
+          </td>
+        </tr>`;
+
+        // Insertar la nueva fila después de la fila del autor correspondiente
+        autorTable.insertAdjacentHTML("beforeend", nuevaFila);
+      });
+    }
+  }
+}
+
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.message === "updatePage") {
@@ -188,6 +255,7 @@ chrome.runtime.onMessage.addListener(
       }
       autorParticipacionLabel[i].value = autores[i].trim();
     }
+    cargarAfiliaciones(bibtexDict);
 
     // ÁREAS DEL CONOCIMIENTO Y PALABRAS CLAVE
 
@@ -258,6 +326,27 @@ function getAuthorNames(autorTable) {
   return authorNamesString;
 }
 
+function getAffiliationsWithIds(organizacionTable) {
+  let affiliationsWithIds = [];
+  for (let i = 0; i < organizacionTable.length; i++) {
+    let authorName = organizacionTable[i].querySelector('input[type="text"][name="autorParticipacionLabel"]');
+    if (authorName) {
+        let organizacionLabels = organizacionTable[i].querySelectorAll('input[type="hidden"][name="autorOrganizacionLabel"]');
+        let organizacionIds = organizacionTable[i].querySelectorAll('input[type="hidden"][name="autorOrganizacionId"]');
+          // Iterate over all the organizations associated with an author
+          for (let j = 0; j < organizacionLabels.length; j++) {
+              let organizacionLabel = organizacionLabels[j];
+              let organizacionId = organizacionIds[j];
+              if (organizacionLabel && organizacionId) {
+                  let organizacionText = `{${authorName.value}} ${organizacionLabel.value} {${organizacionId.value}}`;
+                  affiliationsWithIds.push(organizacionText);
+              }
+          }
+      }
+  }
+  return affiliationsWithIds.join(" <SEP> ");
+}
+
 function getMonthName(monthNumber) {
   for (let month in monthNumbers) {
       if (monthNumbers[month] === monthNumber) {
@@ -296,6 +385,9 @@ exportButton.onclick = function() {
     //author
     let autorTable = document.querySelectorAll('#autorTable input[type="text"][name="autorParticipacionLabel"]');
     bibtexDict.author = getAuthorNames(autorTable);
+    // affiliations
+    let oganizacionTable = document.querySelectorAll('#autorTable tr');
+    bibtexDict.affiliations = getAffiliationsWithIds(oganizacionTable);
     //journal
     let tituloPublicacion = document.getElementsByName("tituloPublicacion")[0];
     let tipoPublicacion = document.getElementsByName("tipoPublicacion")[0];
