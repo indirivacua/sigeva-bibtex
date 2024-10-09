@@ -4,29 +4,21 @@
     "homepage_url": "https://github.com/indirivacua/sigeva-bibtex",
     "description": "Plugin para cargar automáticamente trabajos científicos en SIGEVA a partir de un bibtex.",
     "icons": {
-      "16": "images/icon16.png",
-      "48": "images/icon48.png",
-      "128": "images/icon128.png"
+        "16": "images/icon16.png",
+        "48": "images/icon48.png",
+        "128": "images/icon128.png"
     },
     "version": "1.0",
-    "permissions": ["activeTab"],
+    "permissions": ["activeTab", "storage"],
     "content_scripts": [
-      {
-        "matches": ["https://sigeva.unlp.edu.ar/*", "https://si.conicet.gov.ar/*", "https://cvar.sicytar.mincyt.gob.ar/*"],
-        "js": [
-          "scripts/content/export.js",
-          "scripts/content/import.js",
-          "scripts/content/content.js"
-        ]
-      }
+        {
+            "matches": ["https://sigeva.unlp.edu.ar/*", "https://si.conicet.gov.ar/*", "https://cvar.sicytar.mincyt.gob.ar/*"],
+            "js": ["scripts/content/export.js", "scripts/content/import.js", "scripts/content/content.js"]
+        }
     ],
     "action": {
-      "default_popup": "popup.html",
-      "default_icon": "icon.png"
+        "default_popup": "popup.html",
+        "default_icon": "icon.png"
     },
-    "host_permissions": [
-      "https://sigeva.unlp.edu.ar/*",
-      "https://si.conicet.gov.ar/*",
-      "https://cvar.sicytar.mincyt.gob.ar/*"
-    ]
-  }
+    "host_permissions": ["https://sigeva.unlp.edu.ar/*", "https://si.conicet.gov.ar/*", "https://cvar.sicytar.mincyt.gob.ar/*"]
+}

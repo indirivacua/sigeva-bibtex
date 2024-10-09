@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGEVA BibTeX</title>
-    <link rel="stylesheet" href="styles/styles.css">
-</head>
-<body>
-    <div class="header">
-        <img src="https://sigeva.conicet.gov.ar/wp-content/uploads/2016/03/trans.png" alt="SIGEVA Logo">
-        <h1>BibTeX</h1>
-    </div>
-    <textarea id="input_area" placeholder="Paste your BibTeX here..."></textarea>
-    <div class="button-container">
-        <button id="upload_button">Cargar</button>
-        <button id="insert_button">Insertar</button>
-    </div>
-    <input type="file" id="file_input" style="display: none;">
-    <pre id="console_log"></pre>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>SIGEVA BibTeX</title>
+        <link rel="stylesheet" href="styles/styles.css" />
+    </head>
+    <body>
+        <div class="header">
+            <img src="https://sigeva.conicet.gov.ar/wp-content/uploads/2016/03/trans.png" alt="SIGEVA Logo" />
+            <h1>BibTeX</h1>
+        </div>
+        <textarea id="input_area" placeholder="Paste your BibTeX here..."></textarea>
+        <div class="button-container">
+            <button id="upload_button">Cargar</button>
+            <button id="insert_button">Insertar</button>
+        </div>
+        <div class="checkbox-container">
+            <label> <input type="checkbox" id="custom_fields_checkbox" /> Exportar con campos personalizados </label>
+        </div>
+        <input type="file" id="file_input" style="display: none" />
+        <pre id="console_log"></pre>
 
-    <script src="scripts/popup.js"></script>
-</body>
+        <script src="scripts/popup/popup.js"></script>
+    </body>
 </html>
