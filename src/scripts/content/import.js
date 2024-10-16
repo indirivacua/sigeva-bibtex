@@ -1,250 +1,86 @@
-function importBibtex(bibtexDict) {
+function createImportButton() {
+    let importButton = document.createElement("input");
+    importButton.type = "button";
+    importButton.name = "btnImport";
+    importButton.value = "Importar JSON";
+    importButton.className = "CformBoton";
+    importButton.style.backgroundColor = "#ffd000";
+    importButton.style.position = "absolute";
+    importButton.style.top = "1";
+    importButton.style.right = "5";
+    importButton.onclick = loadFile;
+    return importButton;
+}
+
+function importConicet(conicetDict) {
     // DATOS BÁSICOS
 
     // Tipo de trabajo:
     let tipoTrabajo = document.getElementsByName("tipoTrabajo")[0];
-    switch (bibtexDict["type"]) {
-        case "Artículo Completo":
-            tipoTrabajo.value = "1";
-            break;
-        case "Artículo Breve":
-            tipoTrabajo.value = "2";
-            break;
-        case "Resumen":
-            tipoTrabajo.value = "3";
-            break;
-        case "Otro":
-            tipoTrabajo.value = "4";
-            break;
-        default:
-            tipoTrabajo.value = "-1"; // ---------- Seleccionar ----------
-    }
+    tipoTrabajo.value = conicetDict["tipoTrabajo"];
     // Título de trabajo:
     let produccion = document.getElementsByName("produccion")[0];
-    produccion.value = bibtexDict["title"];
+    produccion.value = conicetDict["produccion"];
     // Idioma:
     let idioma = document.getElementsByName("idioma")[0];
-    if (bibtexDict.hasOwnProperty("language")) {
-        switch (bibtexDict["language"]) {
-            case "Español":
-                idioma.value = "5";
-                break;
-            case "Inglés":
-                idioma.value = "4";
-                break;
-            case "Portugués":
-                idioma.value = "10";
-                break;
-            case "Francés":
-                idioma.value = "6";
-                break;
-            case "Alemán":
-                idioma.value = "2";
-                break;
-            case "Italiano":
-                idioma.value = "7";
-                break;
-            case "Japonés":
-                idioma.value = "8";
-                break;
-            case "Chino":
-                idioma.value = "12";
-                break;
-            case "Ruso":
-                idioma.value = "11";
-                break;
-            case "Latín":
-                idioma.value = "9";
-                break;
-            case "Griego (moderno)":
-                idioma.value = "3";
-                break;
-            case "Otro":
-                idioma.value = "1";
-                break;
-            default:
-                idioma.value = "-1"; // ---------- Seleccionar ----------
-        }
-    } else {
-        //https://developer.chrome.com/docs/extensions/reference/api/i18n#method-detectLanguage
-        //https://stackoverflow.com/a/60028059/11975664
-        const i18n = (window.browser || window.chrome || {}).i18n || {
-            detectLanguage: () => undefined,
-        };
-        i18n.detectLanguage(bibtexDict["title"], function (result) {
-            switch (result.languages[0].language) {
-                case "es":
-                    idioma.value = "5"; // Español
-                    break;
-                case "en":
-                    idioma.value = "4"; // Inglés
-                    break;
-                default:
-                    idioma.value = "-1"; // ---------- Seleccionar ----------
-            }
-        });
-    }
+    idioma.value = conicetDict["idioma"];
     // Tipo de publicación: y Título de la/el revista/libro:
     let tipoPublicacion = document.getElementsByName("tipoPublicacion")[0];
+    tipoPublicacion.value = conicetDict["tipoPublicacion"];
     let tituloPublicacion = document.getElementsByName("tituloPublicacion")[0];
-    if (bibtexDict.hasOwnProperty("journal")) {
-        tipoPublicacion.value = "6"; // Revista
-        tituloPublicacion.value = bibtexDict["journal"];
-    } else if (bibtexDict.hasOwnProperty("booktitle")) {
-        tipoPublicacion.value = "5"; // Libro
-        tituloPublicacion.value = bibtexDict["booktitle"];
-    } else {
-        tipoPublicacion.value = "-1"; // ---------- Seleccionar ----------
-    }
+    tituloPublicacion.value = conicetDict["tituloPublicacion"];
     // ISSN/ISBN:
     let issnIsbn = document.getElementsByName("issnIsbn")[0];
-    if (bibtexDict.hasOwnProperty("isbn")) {
-        issnIsbn.value = bibtexDict["isbn"];
-    } else if (bibtexDict.hasOwnProperty("issn")) {
-        issnIsbn.value = bibtexDict["issn"];
-    }
-    // País de edición: (paisEdicion=paisEvento)
-    // Ciudad de la editorial: (lugarPublicacion=lugarReunion)
+    issnIsbn.value = conicetDict["issnIsbn"];
+    // País de edición:
+    let paisEdicion = document.getElementsByName("paisEdicion")[0];
+    paisEdicion.value = conicetDict["paisEdicion"];
+    // Ciudad de la editorial:
+    let lugarPublicacion = document.getElementsByName("lugarPublicacion")[0];
+    lugarPublicacion.value = conicetDict["lugarPublicacion"];
     // Editorial:
     let editorial = document.getElementsByName("editorial")[0];
-    editorial.value = bibtexDict["publisher"];
+    editorial.value = conicetDict["editorial"];
     // Año de publicación:
     let anioPublica = document.getElementsByName("anioPublica")[0];
-    anioPublica.value = bibtexDict["year"];
+    anioPublica.value = conicetDict["anioPublica"];
     // SOPORTE Y/O MEDIO DE DIFUSIÓN (URL)
-    let tipoSoporteChecked = document.getElementsByName("tipoSoporteChecked");
+    let tipoSoporteChecked0 = document.getElementsByName("tipoSoporteChecked")[0];
+    tipoSoporteChecked0.checked = conicetDict["tipoSoporteChecked0"];
+    let tipoSoporteChecked1 = document.getElementsByName("tipoSoporteChecked")[1];
+    tipoSoporteChecked1.checked = conicetDict["tipoSoporteChecked1"];
     let web = document.getElementsByName("web")[0];
-    if (bibtexDict.hasOwnProperty("url")) {
-        tipoSoporteChecked[1].checked = true;
-        web.value = bibtexDict["url"];
-    } else {
-        tipoSoporteChecked[0].checked = true;
-    }
-    if (bibtexDict.hasOwnProperty("print")) {
-        if (bibtexDict["print"] === "Impreso") {
-            tipoSoporteChecked[0].checked = true;
-        }
-    }
+    web.value = conicetDict["web"];
 
     // DATOS DEL EVENTO
 
     // Nombre del evento:
     let reunionCientifica = document.getElementsByName("reunionCientifica")[0];
-    if (bibtexDict.hasOwnProperty("meeting")) {
-        reunionCientifica.value = bibtexDict["meeting"];
-    } else {
-        reunionCientifica.value = bibtexDict["booktitle"];
-    }
+    reunionCientifica.value = conicetDict["reunionCientifica"];
     // Tipo de evento:
     let tipoReunion = document.getElementsByName("tipoReunion")[0];
-    if (bibtexDict.hasOwnProperty("event")) {
-        switch (bibtexDict["event"]) {
-            case "Conferencia":
-                tipoReunion.value = "1";
-                break;
-            case "Congreso":
-                tipoReunion.value = "2";
-                break;
-            case "Simposio":
-                tipoReunion.value = "3";
-                break;
-            case "Workshop":
-                tipoReunion.value = "4";
-                break;
-            case "Taller":
-                tipoReunion.value = "5";
-                break;
-            case "Jornada":
-                tipoReunion.value = "6";
-                break;
-            case "Otro":
-                tipoReunion.value = "7";
-                break;
-            case "Exposición":
-                tipoReunion.value = "8";
-                break;
-            case "Feria":
-                tipoReunion.value = "9";
-                break;
-            case "Mesa redonda":
-                tipoReunion.value = "10";
-                break;
-            case "Seminario":
-                tipoReunion.value = "11";
-                break;
-            case "Encuentro":
-                tipoReunion.value = "12";
-                break;
-            case "Ronda de negocios":
-                tipoReunion.value = "13";
-                break;
-            default:
-                tipoReunion.value = "-1"; // ---------- Seleccionar ----------
-        }
-    } else {
-        let options_tipoReunion = tipoReunion.options;
-        for (let key in eventType) {
-            if (bibtexDict["booktitle"].includes(key)) {
-                for (let i = 0; i < options_tipoReunion.length; i++) {
-                    if (options_tipoReunion[i].text === eventType[key]) {
-                        tipoReunion.value = options_tipoReunion[i].value;
-                        break;
-                    }
-                }
-            }
-        }
-        if (tipoReunion.value == "-1") {
-            // ---------- Seleccionar ----------
-            tipoReunion.value = "7"; // Otro
-        }
-    }
+    tipoReunion.value = conicetDict["tipoReunion"];
     // Alcance geográfico:
-    let nacionalCheckbox = document.getElementsByName("alcanceNacional")[0];
+    let alcanceNacional = document.getElementsByName("alcanceNacional")[0];
+    alcanceNacional.checked = conicetDict["alcanceNacional"];
     let alcanceInternacional = document.getElementsByName("alcanceInternacional")[0];
-    if (bibtexDict.hasOwnProperty("scope")) {
-        if (bibtexDict["scope"] === "Nacional, Internacional") {
-            nacionalCheckbox.checked = true;
-            alcanceInternacional.checked = true;
-        } else if (bibtexDict["scope"] === "Nacional") {
-            nacionalCheckbox.checked = true;
-            alcanceInternacional.checked = false;
-        } else if (bibtexDict["scope"] === "Internacional") {
-            nacionalCheckbox.checked = false;
-            alcanceInternacional.checked = true;
-        } else {
-            nacionalCheckbox.checked = false;
-            alcanceInternacional.checked = false;
-        }
-    } else {
-        alcanceInternacional.checked = true;
-    }
+    alcanceInternacional.checked = conicetDict["alcanceInternacional"];
     // País del evento:
     let paisEvento = document.getElementsByName("paisEvento")[0];
-    let paisEdicion = document.getElementsByName("paisEdicion")[0];
-    let options_paisEvento = paisEvento.options;
-    for (let i = 0; i < options_paisEvento.length; i++) {
-        if (options_paisEvento[i].text === bibtexDict[!bibtexDict.hasOwnProperty("countryEvent") ? "country" : "countryEvent"]) {
-            paisEvento.value = options_paisEvento[i].value;
-            paisEdicion.value = options_paisEvento[i].value;
-            break;
-        }
-    }
+    paisEvento.value = conicetDict["paisEvento"];
     // Ciudad del evento:
     let lugarReunion = document.getElementsByName("lugarReunion")[0];
-    let lugarPublicacion = document.getElementsByName("lugarPublicacion")[0];
-    lugarReunion.value = bibtexDict[!bibtexDict.hasOwnProperty("cityEvent") ? "city" : "cityEvent"];
-    lugarPublicacion.value = bibtexDict["city"];
+    lugarReunion.value = conicetDict["lugarReunion"];
     // Fecha del evento:
     let fechaReunion = document.getElementsByName("fechaReunion")[0];
-    let monthNumber = monthNumbers[bibtexDict["month"]];
-    fechaReunion.value = monthNumber + "/" + bibtexDict["year"];
+    fechaReunion.value = conicetDict["fechaReunion"];
     // Institución organizadora:
     let institucionOrganizadora = document.getElementsByName("institucionOrganizadora")[0];
-    institucionOrganizadora.value = bibtexDict["organization"];
+    institucionOrganizadora.value = conicetDict["institucionOrganizadora"];
 
     // AUTORES
 
-    let autores = bibtexDict["author"].split(" and ");
+    let autores = conicetDict["autorTable"].split(" <SEP> ");
     let autorParticipacionLabel = document.getElementsByName("autorParticipacionLabel");
     let autorNuevo = document.getElementsByName("autorNuevo")[0];
     for (let i = 0; i < autores.length; i++) {
@@ -256,37 +92,24 @@ function importBibtex(bibtexDict) {
         }
         autorParticipacionLabel[i].value = autores[i].trim();
     }
-    if (bibtexDict.hasOwnProperty("affiliations")) {
-        cargarAfiliaciones(bibtexDict);
-    }
+    cargarAfiliaciones(conicetDict);
 
     // ÁREAS DEL CONOCIMIENTO Y PALABRAS CLAVE
 
     // ÁREA DEL CONOCIMIENTO (MÁXIMO TRES)
-    if (bibtexDict.hasOwnProperty("knowledgeArea")) {
-        let parts = bibtexDict.knowledgeArea.split(" <SEP> ");
-        let [text_0, value_0] = parts[0].match(/(.+) \{(\d+)\}/).slice(1);
-        let [text_0_0, value_0_0] = parts[1].match(/(.+) \{(\d+)\}/).slice(1);
-        let campo_0 = document.getElementsByName("campo_0")[0];
-        campo_0.value = value_0;
-        campo_0.dispatchEvent(new Event("change"));
-        setTimeout(() => {
-            let campo_0_0 = document.getElementsByName("campo_0_0")[0];
-            campo_0_0.value = value_0_0;
-            campo_0_0.dispatchEvent(new Event("change"));
-        }, 1000);
-    } else {
-        let campo_0 = document.getElementsByName("campo_0")[0];
-        campo_0.value = "6"; // 1.2 Ciencias de la Computación e Información
-        let event = new Event("change");
-        campo_0.dispatchEvent(event);
-        setTimeout(function () {
-            let campo_0_0 = document.getElementsByName("campo_0_0")[0];
-            campo_0_0.value = "254"; // 1.2.3 Otras Ciencias de la Computación e Información
-        }, 1000);
-    }
+    let parts = conicetDict.disciplinarTable.split(" <SEP> ");
+    let [text_0, value_0] = parts[0].match(/(.+) \{(\d+)\}/).slice(1);
+    let [text_0_0, value_0_0] = parts[1].match(/(.+) \{(\d+)\}/).slice(1);
+    let campo_0 = document.getElementsByName("campo_0")[0];
+    campo_0.value = value_0;
+    campo_0.dispatchEvent(new Event("change"));
+    setTimeout(() => {
+        let campo_0_0 = document.getElementsByName("campo_0_0")[0];
+        campo_0_0.value = value_0_0;
+        campo_0_0.dispatchEvent(new Event("change"));
+    }, 1000);
     // PALABRA CLAVE
-    let palabrasClave = bibtexDict["keywords"].split(",");
+    let palabrasClave = conicetDict["palabraTable"].split("<SEP>");
     let palabraLabel = document.getElementsByName("palabraLabel");
     let palabraNuevo = document.getElementsByName("palabraNuevo")[0];
     for (let i = 0; i < palabrasClave.length; i++) {
@@ -301,11 +124,42 @@ function importBibtex(bibtexDict) {
 
     // RESUMEN (O ABSTRACT)
     let hdnresumen = document.getElementsByName("hdnresumen")[0];
-    hdnresumen.value = bibtexDict["abstract"];
+    hdnresumen.value = conicetDict["hdnresumen"];
 }
 
-function cargarAfiliaciones(bibtexDict) {
-    let afiliaciones = bibtexDict.affiliations.split("<SEP>");
+function loadFile() {
+    let fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.id = "file_input";
+    fileInput.accept = ".json"; // Aceptar solo archivos JSON
+    fileInput.style.display = "none"; // Hacerlo invisible
+
+    // Agregar el evento para manejar el archivo cargado
+    fileInput.addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                try {
+                    // Parsear el contenido del archivo como JSON
+                    conicetDict = JSON.parse(event.target.result);
+                    console.log(conicetDict);
+                    importConicet(conicetDict);
+                } catch (error) {
+                    console.error("Error al parsear el JSON:", error);
+                }
+            };
+
+            reader.readAsText(file); // Leer el archivo como texto
+        }
+    });
+
+    // Simular clic en el input de tipo file
+    fileInput.click();
+}
+
+function cargarAfiliaciones(conicetDict) {
+    let afiliaciones = conicetDict.oganizacionTable.split("<SEP>");
 
     let afiliacionesPorAutor = {};
 
@@ -371,38 +225,4 @@ function cargarAfiliaciones(bibtexDict) {
     }
 }
 
-const eventType = {
-    Congreso: "Congreso",
-    Congress: "Congreso",
-    Conferencia: "Conferencia",
-    Conference: "Conferencia",
-    Simposio: "Simposio",
-    Symposium: "Simposio",
-    Taller: "Taller",
-    Workshop: "Workshop",
-    Jornada: "Jornada",
-    Exposición: "Exposición",
-    Exhibition: "Exposición",
-    Seminario: "Seminario",
-    Seminar: "Seminario",
-    Encuentro: "Encuentro",
-    Meeting: "Encuentro",
-    // Plurales
-    Congresos: "Congreso",
-    Congresses: "Congreso",
-    Conferencias: "Conferencia",
-    Conferences: "Conferencia",
-    Simposios: "Simposio",
-    Symposiums: "Simposio",
-    Talleres: "Taller",
-    Workshops: "Workshop",
-    Jornadas: "Jornada",
-    Exposiciones: "Exposición",
-    Exhibitions: "Exposición",
-    Seminarios: "Seminario",
-    Seminars: "Seminario",
-    Encuentros: "Encuentro",
-    Meetings: "Encuentro",
-};
-
-globalThis.importBibtex = importBibtex;
+globalThis.createImportButton = createImportButton;

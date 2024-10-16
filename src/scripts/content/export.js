@@ -2,128 +2,75 @@ function createExportButton() {
     let exportButton = document.createElement("input");
     exportButton.type = "submit";
     exportButton.name = "btnExport";
-    exportButton.value = "Exportar";
+    exportButton.value = "Exportar JSON";
     exportButton.className = "CformBoton";
     exportButton.style.backgroundColor = "#ffd000";
-    exportButton.onclick = exportBibtex;
+    exportButton.onclick = exportConicet;
     return exportButton;
 }
 
-function exportBibtex() {
-    let bibtexDict = {};
+function exportConicet() {
+    let conicetDict = {};
 
-    //type
     let tipoTrabajo = document.getElementsByName("tipoTrabajo")[0];
-    bibtexDict.type = tipoTrabajo.options[tipoTrabajo.selectedIndex].text;
-    //title
-    let tituloTrabajo = document.getElementsByName("produccion")[0];
-    bibtexDict.title = tituloTrabajo.value;
-    //language (custom)
+    conicetDict.tipoTrabajo = tipoTrabajo.value;
+    let produccion = document.getElementsByName("produccion")[0];
+    conicetDict.produccion = produccion.value;
     let idioma = document.getElementsByName("idioma")[0];
-    bibtexDict.language = idioma.options[idioma.selectedIndex].text;
-    //journal or booktitle
+    conicetDict.idioma = idioma.value;
     let tituloPublicacion = document.getElementsByName("tituloPublicacion")[0];
+    conicetDict.tituloPublicacion = tituloPublicacion.value;
     let tipoPublicacion = document.getElementsByName("tipoPublicacion")[0];
-    switch (tipoPublicacion.value) {
-        case "5":
-            bibtexDict.booktitle = tituloPublicacion.value;
-            break;
-        case "6":
-            bibtexDict.journal = tituloPublicacion.value;
-            break;
-        default:
-            break;
-    }
-    //isbn
+    conicetDict.tipoPublicacion = tipoPublicacion.value;
     let issnIsbn = document.getElementsByName("issnIsbn")[0];
-    bibtexDict.isbn = issnIsbn.value;
-    //country
+    conicetDict.issnIsbn = issnIsbn.value;
     let paisEdicion = document.getElementsByName("paisEdicion")[0];
-    bibtexDict.country = paisEdicion.options[paisEdicion.selectedIndex].text;
-    //city
+    conicetDict.paisEdicion = paisEdicion.value;
     let lugarPublicacion = document.getElementsByName("lugarPublicacion")[0];
-    bibtexDict.city = lugarPublicacion.value;
-    //publisher
+    conicetDict.lugarPublicacion = lugarPublicacion.value;
     let editorial = document.getElementsByName("editorial")[0];
-    bibtexDict.publisher = editorial.value;
-    //year
+    conicetDict.editorial = editorial.value;
     let anioPublica = document.getElementsByName("anioPublica")[0];
-    bibtexDict.year = anioPublica.value;
-    //print (custom)
-    let tipoSoporteChecked = document.getElementsByName("tipoSoporteChecked");
-    bibtexDict.print = tipoSoporteChecked[0].checked ? "Impreso" : "No Impreso";
-    //url
+    conicetDict.anioPublica = anioPublica.value;
+    let tipoSoporteChecked0 = document.getElementsByName("tipoSoporteChecked")[0];
+    conicetDict.tipoSoporteChecked0 = tipoSoporteChecked0.checked;
+    let tipoSoporteChecked1 = document.getElementsByName("tipoSoporteChecked")[1];
+    conicetDict.tipoSoporteChecked1 = tipoSoporteChecked1.checked;
     let web = document.getElementsByName("web")[0];
-    bibtexDict.url = web.value;
-    //meeting (custom)
+    conicetDict.web = web.value;
     let reunionCientifica = document.getElementsByName("reunionCientifica")[0];
-    bibtexDict.meeting = reunionCientifica.value;
-    //event (custom)
+    conicetDict.reunionCientifica = reunionCientifica.value;
     let tipoReunion = document.getElementsByName("tipoReunion")[0];
-    bibtexDict.event = tipoReunion.options[tipoReunion.selectedIndex].text;
-    //scope (custom)
-    let scope = "";
-    let nacionalCheckbox = document.getElementsByName("alcanceNacional")[0];
-    let internacionalCheckbox = document.getElementsByName("alcanceInternacional")[0];
-    if (nacionalCheckbox.checked && internacionalCheckbox.checked) {
-        scope = "Nacional, Internacional";
-    } else if (nacionalCheckbox.checked) {
-        scope = "Nacional";
-    } else if (internacionalCheckbox.checked) {
-        scope = "Internacional";
-    }
-    bibtexDict.scope = scope;
-    //countryEvent (custom)
+    conicetDict.tipoReunion = tipoReunion.value;
+    let alcanceNacional = document.getElementsByName("alcanceNacional")[0];
+    conicetDict.alcanceNacional = alcanceNacional.checked;
+    let alcanceInternacional = document.getElementsByName("alcanceInternacional")[0];
+    conicetDict.alcanceInternacional = alcanceInternacional.checked;
     let paisEvento = document.getElementsByName("paisEvento")[0];
-    bibtexDict.countryEvent = paisEvento.options[paisEvento.selectedIndex].text;
-    //cityEvent (custom)
+    conicetDict.paisEvento = paisEvento.value;
     let lugarReunion = document.getElementsByName("lugarReunion")[0];
-    bibtexDict.cityEvent = lugarReunion.value;
-    //month
+    conicetDict.lugarReunion = lugarReunion.value;
     let fechaReunion = document.getElementsByName("fechaReunion")[0];
-    let monthNumber = fechaReunion.value.split("/")[0];
-    bibtexDict.month = getMonthName(monthNumber);
-    //organization
+    conicetDict.fechaReunion = fechaReunion.value;
     let institucionOrganizadora = document.getElementsByName("institucionOrganizadora")[0];
-    bibtexDict.organization = institucionOrganizadora.value;
-    //author
+    conicetDict.institucionOrganizadora = institucionOrganizadora.value;
     let autorTable = document.querySelectorAll('#autorTable input[type="text"][name="autorParticipacionLabel"]');
-    bibtexDict.author = getAuthorNames(autorTable);
-    //affiliations (custom)
+    conicetDict.autorTable = getAuthorNames(autorTable);
     let oganizacionTable = document.querySelectorAll("#autorTable tr");
-    bibtexDict.affiliations = getAffiliationsWithIds(oganizacionTable);
-    //knowledgeArea (custom)
+    conicetDict.oganizacionTable = getAffiliationsWithIds(oganizacionTable);
     let campo_0 = document.getElementsByName("campo_0")[0];
     let campo_0_0 = document.getElementsByName("campo_0_0")[0];
-    let value_0 = campo_0.value;
     let text_0 = campo_0.options[campo_0.selectedIndex].text;
-    let value_0_0 = campo_0_0.value;
     let text_0_0 = campo_0_0.options[campo_0_0.selectedIndex].text;
-    bibtexDict.knowledgeArea = `${text_0} {${value_0}} <SEP> ${text_0_0} {${value_0_0}}`;
-    //keywords
+    conicetDict.disciplinarTable = `${text_0} {${campo_0.value}} <SEP> ${text_0_0} {${campo_0_0.value}}`;
     let palabraTable = document.querySelectorAll('#palabraTable input[type="text"][name="palabraLabel"]');
-    bibtexDict.keywords = getKeywords(palabraTable);
-    //abstract
+    conicetDict.palabraTable = getKeywords(palabraTable);
     let hdnresumen = document.getElementsByName("hdnresumen")[0];
-    bibtexDict.abstract = hdnresumen.value;
-    //key
-    let firstAuthor = bibtexDict.author.split(/ and |,/)[0].replace(/\s+/g, "");
-    let firstWord = bibtexDict.title.split(/[ :\-]/)[0];
-    bibtexDict.key = `${firstAuthor}${bibtexDict.year}${firstWord}`.toLowerCase();
-    //entry
-    bibtexDict.entry = "inproceedings"; //'article'
+    conicetDict.hdnresumen = hdnresumen.value;
 
-    if (!globalThis.exportWithCustomFields) {
-        const keysToRemove = ["language", "print", "meeting", "event", "scope", "countryEvent", "cityEvent", "affiliations", "knowledgeArea"];
-        keysToRemove.forEach((key) => {
-            delete bibtexDict[key];
-        });
-        // alert("Exportando sin campos personalizados.");
-    }
+    let json = JSON.stringify(conicetDict, null, 4);
 
-    let bibtex = dictToBibtex(bibtexDict);
-
-    download(bibtex, `${bibtexDict.title}.bib`, "application/x-bibtex");
+    download(json, `${conicetDict.produccion}.json`, "application/json");
 }
 
 function download(data, filename, type) {
@@ -140,25 +87,14 @@ function download(data, filename, type) {
     }, 0);
 }
 
-function dictToBibtex(dict) {
-    let bibtex = "@" + dict.entry + "{" + dict.key + ",\n";
-    for (let key in dict) {
-        if (dict.hasOwnProperty(key) && key !== "entry" && key !== "key") {
-            bibtex += "  " + key + "={" + dict[key] + "},\n";
-        }
-    }
-    bibtex += "}";
-    return bibtex;
-}
-
 function getAuthorNames(autorTable) {
     let authorNames = [];
     for (let i = 0; i < autorTable.length; i++) {
         authorNames.push(autorTable[i].value);
     }
-    let authorNamesString = authorNames.join(" and ");
+    let authorNamesString = authorNames.join(" <SEP> ");
     // Trim the trailing " and " from the string
-    if (authorNamesString.endsWith(" and ")) {
+    if (authorNamesString.endsWith(" <SEP> ")) {
         authorNamesString = authorNamesString.substring(0, authorNamesString.length - 5);
     }
     return authorNamesString;
@@ -185,20 +121,12 @@ function getAffiliationsWithIds(organizacionTable) {
     return affiliationsWithIds.join(" <SEP> ");
 }
 
-function getMonthName(monthNumber) {
-    for (let month in monthNumbers) {
-        if (monthNumbers[month] === monthNumber) {
-            return month;
-        }
-    }
-}
-
 function getKeywords(palabraTable) {
     let keywords = [];
     for (let i = 0; i < palabraTable.length; i++) {
         keywords.push(palabraTable[i].value);
     }
-    let keywordsString = keywords.join(", ");
+    let keywordsString = keywords.join(" <SEP> ");
     return keywordsString;
 }
 

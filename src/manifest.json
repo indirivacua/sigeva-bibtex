@@ -1,15 +1,15 @@
 {
     "manifest_version": 3,
-    "name": "sigeva-bibtex",
-    "homepage_url": "https://github.com/indirivacua/sigeva-bibtex",
-    "description": "Plugin para cargar automáticamente trabajos científicos en SIGEVA a partir de un bibtex.",
+    "name": "SIGEVA-JSON",
+    "homepage_url": "https://github.com/indirivacua/SIGEVA-JSON",
+    "description": "Plugin para cargar automáticamente trabajos científicos en SIGEVA a partir de un JSON.",
     "icons": {
         "16": "images/icon16.png",
         "48": "images/icon48.png",
         "128": "images/icon128.png"
     },
     "version": "1.0",
-    "permissions": ["activeTab", "storage"],
+    "permissions": ["activeTab"],
     "content_scripts": [
         {
             "matches": ["https://sigeva.unlp.edu.ar/*", "https://si.conicet.gov.ar/*", "https://cvar.sicytar.mincyt.gob.ar/*"],
@@ -17,8 +17,11 @@
         }
     ],
     "action": {
-        "default_popup": "popup.html",
-        "default_icon": "icon.png"
+        "default_icon": {
+            "16": "images/icon16.png",
+            "48": "images/icon48.png",
+            "128": "images/icon128.png"
+        }
     },
     "host_permissions": ["https://sigeva.unlp.edu.ar/*", "https://si.conicet.gov.ar/*", "https://cvar.sicytar.mincyt.gob.ar/*"]
 }
